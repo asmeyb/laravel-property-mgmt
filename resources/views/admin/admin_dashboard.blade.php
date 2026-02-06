@@ -114,8 +114,21 @@
 	<!-- Examples -->
 	<script src="{{ asset('backend/js/examples/examples.dashboard.js') }}"></script>
 
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> 
- 	<script src="{{ asset('backend/js/code.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script src="{{ asset('backend/js/code.js') }}"></script>
+
+	<script src="{{ asset('backend/js/tinymce/tinymce.min.js') }}"></script>
+	<script>
+		tinymce.init({
+			selector: '#detailsEditor',
+			plugins: 'lists link image preview code',
+			toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image | preview code',
+			menubar: false,
+			height: 300
+		});
+	</script>
+
+
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
@@ -140,6 +153,152 @@
 					break;
 			}
 		@endif 
+	</script>
+
+
+	<script type="text/javascript">
+			$(document).ready(function () {
+				$('#image').change(function (e) {
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						$('#showImage').attr('src', e.target.result);
+					}
+					reader.readAsDataURL(e.target.files['0']);
+				})
+			})
+
+
+		/// Generate Slug
+		function generateSlug() {
+			const title = document.getElementById('titleInput').value;
+			const slug = title.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/(^-|-$)+/g, '');
+			document.getElementById('slugInput').value = slug;
+		}
+		//End Method
+
+
+		/// Logical Hide & Show
+		const investmentType = document.getElementById('investment_type');
+		const installmentFields = document.getElementById('installmentFields');
+
+		installmentFields.style.display = 'none';
+		investmentType.addEventListener('change', function () {
+			if (this.value === 'Investment-By-Installment') {
+				installmentFields.style.display = 'block';
+			} else {
+				installmentFields.style.display = 'none';
+			}
+		});
+
+
+		//// Change % Or USD
+		document.getElementById('profit_amount_type').addEventListener('change', function () {
+			const value = this.value;
+			document.querySelector('input[name="minimum_profit_amount"] + .input-group-text').textContent = value;
+
+			document.querySelector('input[name="profit_amount"] + .input-group-text').textContent = value;
+
+			document.querySelector('input[name="auto_profit_distribution"] + .input-group-text').textContent = value;
+
+		});
+		// End Change % Or USD
+
+		/// Auto Profit Distribution Hide and Show
+
+		const profitDistributionSelete = document.getElementById('profit_distribution');
+		const profitWrapper = document.getElementById('profit_distribution_wrapper');
+		const autoWrapper = document.getElementById('auto_profit_wrapper');
+
+		function toggleProfitFields(value) {
+			if (value === 'Manual') {
+				autoWrapper.style.display = 'none';
+				profitWrapper.classList.remove('col-md-6');
+				profitWrapper.classList.add('col-md-12')
+			} else if (value === 'Auto') {
+				autoWrapper.style.display = 'block';
+				profitWrapper.classList.remove('col-md-12');
+				profitWrapper.classList.add('col-md-6')
+			} else {
+				autoWrapper.style.display = 'block';
+				profitWrapper.classList.remove('col-md-12');
+				profitWrapper.classList.add('col-md-6')
+			}
+		}
+
+		toggleProfitFields(profitDistributionSelete.value);
+		profitDistributionSelete.addEventListener('change', function () {
+			toggleProfitFields(this.value);
+		});
+		// End Method 
+
+
+
+
+
+		/// Main Installment Amount Calculation 
+		const perShareInput = document.querySelector('input[name="per_share_amount"]');
+		const downPaymentInput = document.querySelector('input[name="down_payment"]');
+		const totalInstallmentInput = document.querySelector('input[name="total_installment"]');
+		const perInstallmentInput = document.querySelector('input[name="per_installment_amount"]');
+
+		function calculateInstallment() {
+			const perShare = parseFloat(perShareInput.value) || 0;
+			const downPaymentPercent = parseFloat(downPaymentInput.value) || 0;
+			const totalInstallments = parseInt(totalInstallmentInput.value) || 0;
+
+			if (perShare > 0 && totalInstallments > 0) {
+				const downPaymentAmount = (perShare * downPaymentPercent) / 100;
+				const remainingAmount = perShare - downPaymentAmount;
+				const perInstallment = remainingAmount / totalInstallments;
+
+				perInstallmentInput.value = perInstallment.toFixed(2);
+			} else {
+				perInstallmentInput.value = '';
+			}
+		}
+
+		// Bind the event Listeners 
+		perShareInput.addEventListener('input', calculateInstallment);
+		downPaymentInput.addEventListener('input', calculateInstallment);
+		totalInstallmentInput.addEventListener('input', calculateInstallment);
+
+		/// Profit Schedul hide and show
+		const scheduleSelete = document.getElementById('profit_schedule');
+		const profitScheduleWrapper = document.getElementById('profitScheduleWrapper');
+		const profitSchedulePeriodWrapper = document.getElementById('profitSchedulePeriodWrapper');
+		const repeatTimeWrapper = document.getElementById('repeatTimeWrapper');
+
+		function toggleSchedulFields(value) {
+			profitScheduleWrapper.classList.remove('col-md-6', 'col-md-12');
+
+			if (value === 'One-Time') {
+				profitSchedulePeriodWrapper.style.display = 'none';
+				repeatTimeWrapper.style.display = 'none';
+				profitScheduleWrapper.classList.add('col-md-12');
+			} else if (value === 'Life-Time') {
+				profitSchedulePeriodWrapper.style.display = 'block';
+				repeatTimeWrapper.style.display = 'none';
+				profitScheduleWrapper.classList.add('col-md-6');
+			} else if (value === 'Repeated-Time') {
+				profitSchedulePeriodWrapper.style.display = 'block';
+				repeatTimeWrapper.style.display = 'block';
+				profitScheduleWrapper.classList.add('col-md-6');
+			} else {
+				profitSchedulePeriodWrapper.style.display = 'none';
+				repeatTimeWrapper.style.display = 'none';
+				profitScheduleWrapper.classList.add('col-md-12');
+			}
+		}
+		toggleSchedulFields(scheduleSelete.value);
+		scheduleSelete.addEventListener('change', function () {
+			toggleSchedulFields(this.value);
+		});
+		// End 
+
+
+
 	</script>
 
 
