@@ -1,10 +1,10 @@
 <div class="body-overlay"></div>
 
-<div class="sidebar-overlay"></div>
+    <div class="sidebar-overlay"></div>
 
-
-<a class="scroll-top"><i class="fas fa-angle-double-up"></i></a>
-<header class="header " id="header">
+    
+        <a class="scroll-top"><i class="fas fa-angle-double-up"></i></a>
+    <header class="header " id="header">
     <div class="container ">
         <nav class="navbar navbar-expand-lg">
             <a class="navbar-brand logo order-1" href=" ">
@@ -19,38 +19,45 @@
                     <li>
                         <div class="navbar-actions navbar-actions--sm">
                             <div class="custom--dropdown">
-
-
-                            </div>
-                            <a href=" " class="btn btn--base">Login</a>
-                        </div>
+         
+       
+    </div>
+           <a href=" " class="btn btn--base">Login</a>
+                                                                                </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href=" ">Home</a>
                     </li>
-                    <li class="nav-item ">
+                                        <li class="nav-item ">
                         <a href=" " class="nav-link">About</a>
                     </li>
-                    <li class="nav-item">
+                                        <li class="nav-item">
                         <a class="nav-link " href=" ">Properties</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " href=" ">Blog</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="//contact">Contact</a>
+                        <a class="nav-link "
+                            href="//contact">Contact</a>
                     </li>
                 </ul>
             </div>
             <div class="navbar-actions navbar-actions--md order-2 order-lg-4">
                 <div class="custom--dropdown">
+        
+        
+              
+                                    </ul>
+    </div>
+    @auth
+     <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }} " class="btn btn--base">Dashboard</a>
+    @else 
+ <a href="{{ route('login') }}" class="btn btn--base">Login</a>
+    @endauth
 
-
-
-                    </ul>
-                </div>
-                <a href="//user/login" class="btn btn--base">Login</a>
-            </div>
+       
+                                            </div>
         </nav>
     </div>
 </header>

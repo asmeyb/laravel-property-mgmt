@@ -3,25 +3,29 @@
         <div class="cross-sidebar"><i class="fas fa-times"></i></div>
         <ul class="sidebar-menu-list">
             <li class="sidebar-menu-list__item">
-                <a href="{{ route('dashboard') }}" class="sidebar-menu-list__link active">
+                <a href="{{ route('dashboard') }}"
+                    class="sidebar-menu-list__link {{ request()->routeIs('dashboard') ? 'active' : '' }} ">
                     <span class="icon"><i class="fas fa-th-large"></i></span>
                     <span class="text">Dashboard</span>
                 </a>
             </li>
             <li class="sidebar-menu-list__item">
-                <a href="{{ route('my.investment') }}" class="sidebar-menu-list__link ">
+                <a href="{{ route('my.investment') }}"
+                    class="sidebar-menu-list__link  {{ request()->routeIs('my.investment') ? 'active' : '' }}">
                     <span class="icon"><i class="fas fa-dolly-flatbed"></i></span>
                     <span class="text">My Investments</span>
                 </a>
             </li>
             <li class="sidebar-menu-list__item">
-                <a href="{{ route('profit.history') }}" class="sidebar-menu-list__link ">
+                <a href="{{ route('profit.history') }}"
+                    class="sidebar-menu-list__link  {{ request()->routeIs('profit.history') ? 'active' : '' }}">
                     <span class="icon"><i class="fas fa-coins"></i></span>
                     <span class="text">Profit History</span>
                 </a>
             </li>
             <li class="sidebar-menu-list__item has-dropdown">
-                <a href="javascript:void(0)" class="sidebar-menu-list__link ">
+                <a href="javascript:void(0)"
+                    class="sidebar-menu-list__link  {{ request()->routeIs('deposit.money') ? 'active' : '' }}">
                     <span class="icon"><i class="fas fa-wallet"></i></span>
                     <span class="text">Deposit</span>
                 </a>
@@ -36,7 +40,8 @@
                 </div>
             </li>
             <li class="sidebar-menu-list__item has-dropdown">
-                <a href="javascript:void(0)" class="sidebar-menu-list__link ">
+                <a href="javascript:void(0)"
+                    class="sidebar-menu-list__link  {{ request()->routeIs('withdraw.money') ? 'active' : '' }}">
                     <span class="icon"><i class="far fa-credit-card"></i></span>
                     <span class="text">Withdraw</span>
                 </a>
@@ -51,20 +56,23 @@
                 </div>
             </li>
             <li class="sidebar-menu-list__item">
-                <a href="{{ route('transactions') }}" class="sidebar-menu-list__link ">
+                <a href="{{ route('transactions') }}"
+                    class="sidebar-menu-list__link  {{ request()->routeIs('transactions') ? 'active' : '' }} ">
                     <span class="icon"><i class="fas fa-exchange-alt"></i></span>
                     <span class="text">Transactions</span>
                 </a>
             </li>
 
             <li class="sidebar-menu-list__item">
-                <a class="sidebar-menu-list__link " href="{{ route('profile.setting') }}">
+                <a class="sidebar-menu-list__link  {{ request()->routeIs('profile.setting') ? 'active' : '' }}"
+                    href="{{ route('profile.setting') }}">
                     <span class="icon"><i class="fas fa-user-circle"></i></span>
                     <span class="text">Profile Setting</span>
                 </a>
             </li>
             <li class="sidebar-menu-list__item">
-                <a class="sidebar-menu-list__link " href="{{ route('user.change.password') }}">
+                <a class="sidebar-menu-list__link  {{ request()->routeIs('user.change.password') ? 'active' : '' }}"
+                    href="{{ route('user.change.password') }}">
                     <span class="icon"><i class="fas fa-cog"></i></span>
                     <span class="text">Change Password</span>
                 </a>

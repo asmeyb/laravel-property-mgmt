@@ -30,7 +30,7 @@
     <link href="{{ asset('frontend/assets/css/main.css?get=5') }}" rel="stylesheet">
     <link href="{{ asset('frontend/assets/css/custom.css?get=5') }}" rel="stylesheet">
 
-
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
 
 </head>
 
@@ -58,6 +58,30 @@
     <link href="{{ asset('frontend/assets/js/iziToast_custom.css') }}" rel="stylesheet">
     <script src="{{ asset('frontend/assets/js/iziToast.min.js') }}"></script>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        @if(Session::has('message'))
+            var type = "{{ Session::get('alert-type', 'info') }}"
+            switch (type) {
+                case 'info':
+                    toastr.info(" {{ Session::get('message') }} ");
+                    break;
+
+                case 'success':
+                    toastr.success(" {{ Session::get('message') }} ");
+                    break;
+
+                case 'warning':
+                    toastr.warning(" {{ Session::get('message') }} ");
+                    break;
+
+                case 'error':
+                    toastr.error(" {{ Session::get('message') }} ");
+                    break;
+            }
+        @endif 
+    </script>
 
 
     <script src="{{ asset('frontend/assets/global/js/firebase/firebase-8.3.2.js') }}"></script>

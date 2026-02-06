@@ -26,25 +26,34 @@
                     </div>
                     <div class="row justify-content-center dashboard-widget-wrapper">
                         <div class="col-md-12">
-                            <form method="post">
-                                <input type="hidden" name="_token" value="AgrQteztDPUt9ULMougURIKUlrFDk0lPkode5Rzl"
-                                    autocomplete="off">
+
+                            <form method="post" action="{{ route('user.password.update') }}">
+                                @csrf
+
                                 <div class="form-group">
-                                    <label class="form--label">Current Password</label>
-                                    <input type="password" class="form--control" name="current_password" required
-                                        autocomplete="current-password">
+                                    <label class="form--label">Old Password</label>
+                                    <input type="password"
+                                        class="form--control  @error('old_password') is-invalid @enderror"
+                                        name="old_password" id="old_password">
+                                    @error('old_password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label class="form--label">Password</label>
-                                    <input type="password" class="form--control " name="password" required
-                                        autocomplete="current-password">
+                                    <label class="form--label">New Password</label>
+                                    <input type="password"
+                                        class="form--control  @error('new_password') is-invalid @enderror"
+                                        name="new_password" id="new_password">
+                                    @error('new_password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label class="form--label">Confirm Password</label>
-                                    <input type="password" class="form--control" name="password_confirmation" required
-                                        autocomplete="current-password">
+                                    <input type="password" class="form--control" name="new_password_confirmation"
+                                        id="new_password_confirmation">
                                 </div>
-                                <button type="submit" class="btn btn--base w-100 mt-2">Submit</button>
+                                <button type="submit" class="btn btn--base w-100 mt-2">Save Changes</button>
                             </form>
                         </div>
                     </div>

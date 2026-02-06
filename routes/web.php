@@ -33,6 +33,10 @@ Route::controller(UserController::class)->group(function(){
     Route::get('/profile/setting', 'ProfileSetting')->name('profile.setting');
     Route::get('/user/change/password', 'UserChangePassword')->name('user.change.password');
 
+
+    Route::post('/user/profile/update', 'UserProfileUpdate')->name('user.profile.update');
+    Route::post('/user/password/update', 'UserPasswordUpdate')->name('user.password.update');
+
 });
 
 
@@ -40,6 +44,9 @@ Route::controller(UserController::class)->group(function(){
 });
 
 /// End User Role Access Started
+
+
+
 
 
 /// Only Admin Role Access Started
@@ -89,9 +96,18 @@ Route::controller(PropertyController::class)->group(function(){
 
 
 
+
+
 });
 
 /// End Admin Role Access Started
+
+
+
+
+
+
+
 
 
 
