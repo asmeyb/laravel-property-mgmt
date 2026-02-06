@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
 use App\Http\Controllers\Admin\PropertyController;
+use App\Http\Controllers\User\UserController;
 
 Route::get('/', function () {
     return view('home.index');
@@ -16,16 +17,29 @@ Route::get('/', function () {
 Route::middleware(['auth', IsUser::class])->group(function(){
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('home.dashboard.user_dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard'); 
+
+
+ Route::get('/user/logout', [UserController::class, 'UserLogout'])->name('user.logout');  
+
+
+Route::controller(UserController::class)->group(function(){
+    Route::get('/my/investment', 'MyInvestment')->name('my.investment'); 
+    Route::get('/profit/history', 'ProfitHistory')->name('profit.history');
+    Route::get('/deposit/money', 'DepositMoney')->name('deposit.money');
+    Route::get('/withdraw/money', 'WithdrawMoney')->name('withdraw.money');
+    Route::get('/transactions', 'Transactions')->name('transactions');
+    Route::get('/profile/setting', 'ProfileSetting')->name('profile.setting');
+    Route::get('/user/change/password', 'UserChangePassword')->name('user.change.password');
+
+});
+
 
 
 });
 
 /// End User Role Access Started
-
-
-
 
 
 /// Only Admin Role Access Started
@@ -72,6 +86,7 @@ Route::controller(PropertyController::class)->group(function(){
 
     Route::delete('/property/galleryimage-delete/{id}', 'GalleryImgDelete');
 });
+
 
 
 });
