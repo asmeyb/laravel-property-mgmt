@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\InvestmentController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
 use App\Http\Controllers\Admin\PropertyController;
@@ -94,6 +95,17 @@ Route::controller(PropertyController::class)->group(function(){
 
 });
 
+
+Route::controller(InvestmentController::class)->group(function(){ 
+    
+    Route::get('/investment/page/{slug}', 'UserInvestmentProperty')->name('user.invest.page'); 
+    // Route::get('/add/investment', 'AddInvestment')->name('add.investment'); 
+    // Route::post('/store/investment', 'StoreInvestment')->name('store.investment'); 
+    // Route::get('/edit/investment/{id}', 'EditInvestment')->name('edit.investment'); 
+    // Route::post('/update/investment/{id}', 'UpdateInvestment')->name('update.investment'); 
+    // Route::get('/delete/investment/{id}', 'DeleteInvestment')->name('delete.investment'); 
+
+    });
 /// End Admin Role Access Started
 
 

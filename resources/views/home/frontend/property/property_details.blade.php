@@ -119,35 +119,72 @@
                     </div>
 
                     <div class="property-details__buttons mb-md-4 mb-0">
-                        <a href="login" type="button" class="btn btn--lg btn--base">
-                            Invest Now </a>
-                        <button type="button" class="btn btn--lg btn-outline--base d-lg-none" data-toggle="sidebar"
-                            data-target="#property-details-sidebar">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Details</span>
-                        </button>
+                        @php
+                            $totalShare = $property->total_share ?? 0;
+                            $soldShare = $property->investments->sum('share_count');
+                            $availableShare = max(0, $totalShare - $soldShare);
+                            $isSoldOut = $availableShare <= 0; 
+                        @endphp
+
+                        @if ($isSoldOut)
+                            <button type="button" class="btn btn--lg btn--base disabled"
+                                style="pointer-events: auto; cursor: not-allowed;" title="It's not avaiable"> Invest Now
+                            </button>
+
+                        @else
+                            @guest
+                                <a href="{{ route('login') }}" type="button" class="btn btn--lg btn--base">
+                                    Invest Now </a>
+                            @else
+
+                                <a href="{{ route('user.invest.page', $property->slug) }}" type="button" class="btn btn--lg btn--base">
+                                    Invest Now </a>
+                            @endguest
+
+                        @endif
+
                     </div>
 
                     <div id="property-details-sidebar" class="property-details-sidebar">
+                        @php
+                            $totalShare = $property->total_share ?? 0;
+                            $perShare = $property->per_share_amount ?? 0;
+
+                            $soldShare = $property->investments->sum('share_count');
+                            $totalInvestment = $soldShare * $perShare;
+
+                            $totalPropertyValue = $totalShare * $perShare;
+
+                            $progreePercent = $totalShare > 0
+                                ? min(100, ($soldShare / $totalShare) * 100)
+                                : 0;
+                            $availableShare = max(0, $totalShare - $soldShare);
+                            $investorCount = $property->investments->count();
+
+                           @endphp
+
                         <button type="button" class="close-btn">
                             <i class="fas fa-times"></i>
                         </button>
                         <div class="property-details-sidebar__block mb-4">
                             <div class="block-heading">
                                 <p class="block-heading__subtitle">Available:
-                                    0 Share </p>
+                                    <strong>{{ $availableShare }}</strong> Share
+                                </p>
                             </div>
                             <div class="card-progress mt-2">
                                 <div class="card-progress__bar">
-                                    <div class="card-progress__thumb" style="width: 100%;">
+                                    <div class="card-progress__thumb" style="width: {{ $progreePercent }}%;">
                                     </div>
                                 </div>
                                 <span class="card-progress__label fs-12">
-                                    2 Investors |
-                                    $45,000.00
-                                    (100%)
+                                    {{ $investorCount }} Investors |
+                                    ${{ $totalInvestment }} of ${{ $totalPropertyValue }}
+                                    ({{ round($progreePercent) }}%)
                                 </span>
                             </div>
+
+
                             <ul class="property-details-amount-info">
                                 <li class="property-details-amount-info__item">
                                     <span class="label">
