@@ -46,9 +46,6 @@ Route::controller(UserController::class)->group(function(){
 /// End User Role Access Started
 
 
-
-
-
 /// Only Admin Role Access Started
 
 Route::middleware(['auth', IsAdmin::class])->group(function(){
@@ -95,20 +92,13 @@ Route::controller(PropertyController::class)->group(function(){
 });
 
 
-
-
-
 });
 
 /// End Admin Role Access Started
 
 
-
-
-
-
-
-
+/// This Routes for access all 
+Route::get('/details/{slug}', [PropertyController::class, 'PropertyDetails'])->name('property.details');
 
 
 Route::middleware('auth')->group(function () {

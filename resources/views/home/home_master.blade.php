@@ -90,6 +90,85 @@
     <script>
         (function ($) {
             "use strict";
+
+            $('#investBtn').on('click', function () {
+                let modal = $('#investModal');
+                modal.modal('show');
+            });
+
+
+            $('iframe').attr('width', '100%');
+
+            // Property Details Slider Js Start
+            $('.property-details__slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: true,
+                asNavFor: '.property-details__thumb',
+                prevArrow: '<button type="button" class="slick-prev"><i class="fas fa-angle-left"></i></button>',
+                nextArrow: '<button type="button" class="slick-next"><i class="fas fa-angle-right"></i></button>'
+            });
+
+            $('.property-details__thumb').slick({
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                asNavFor: '.property-details__slider',
+                dots: false,
+                arrows: false,
+                centerMode: true,
+                focusOnSelect: true,
+                responsive: [{
+                    breakpoint: 600 + 1,
+                    settings: {
+                        slidesToShow: 3,
+                    }
+                },
+                {
+                    breakpoint: 424 + 1,
+                    settings: {
+                        slidesToShow: 2,
+                    }
+                }
+                ]
+            });
+
+            $('.property-details-sidebar__block.investors').each(function (index, element) {
+                $(element).find('.property-details__investors').slick({
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    autoplay: true,
+                    speed: 1500,
+                    arrows: true,
+                    appendArrows: $(element).find('.block-heading__arrows'),
+                    prevArrow: '<button type="button" class="slick-prev"><i class="fas fa-angle-left"></i></button>',
+                    nextArrow: '<button type="button" class="slick-next"><i class="fas fa-angle-right"></i></button>',
+                });
+            });
+            // Property Details Slider Js end
+
+
+            $('.popup-youtube').magnificPopup({
+                type: 'iframe',
+                iframe: {
+                    patterns: {
+                        youtube: {
+                            index: 'youtube.com/',
+                            id: 'v=',
+                            src: `https://www.youtube.com/embed/WDQ0cPwHYDA`
+                        }
+                    }
+                },
+                mainClass: 'mfp-fade',
+                removalDelay: 160,
+                preloader: false,
+                fixedContentPos: false
+            });
+        })(jQuery);
+    </script>
+
+    <script>
+        (function ($) {
+            "use strict";
             // Featured Property Cards Slider Js Start
             $('.featured-property').each(function (index, element) {
                 $(element).find('.featured-property__cards').slick({
