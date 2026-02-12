@@ -19,5 +19,9 @@ class Investment extends Model
      public function time(){
         return $this->belongsTo(Time::class, 'time_id');
     }
-    
+
+    public function installments(){
+        return $this->hasMany(Installment::class, 'investment_id');
+    }
+
 }
