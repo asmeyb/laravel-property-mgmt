@@ -40,28 +40,46 @@
                                     <thead>
                                         <tr>
                                             <th>Property</th>
-                                            <th>Invested Amount</th>
+                                            <th>Invested Amount/Share</th>
+                                            <th>Down Payment</th>
                                             <th>Due Amount</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <a href="//realvest/property/stylish-apartment">
-                                                    <strong>Stylish Apartment</strong>
-                                                </a>
-                                            </td>
-                                            <td><strong>$20,000.00</strong>
-                                            </td>
-                                            <td><strong>$14,000.00</strong></td>
-                                            <td><span class="badge badge--primary">Running</span></td>
-                                            <td>
+                                        @foreach ($investments as $investment)
+                                            <tr>
+                                                <td>
+                                                    <a href="#">
+                                                        <strong>{{ $investment->property->title }}</strong>
+                                                    </a>
+                                                </td>
+                                                <td><strong>${{ $investment->total_amount }}</strong>
+                                                </td>
+                                                @php
+                                                    $discountAmount = $investment->total_amount * ($investment->property->down_payment / 100);
+                                                @endphp
 
+                                                <td> <strong>{{ $investment->property->down_payment }} %
+                                                        (${{ $discountAmount }})</strong></td>
+                                                <td> <strong>${{ $investment->due_amount }}</strong></td>
 
-                                            </td>
-                                        </tr>
+                                                <td>
+                                                    @if ($investment->payment_status == 'paid')
+                                                        <span class="badge badge--success">Completed</span>
+                                                    @elseif ($investment->payment_status == 'pending')
+                                                        <span class="badge badge--warning">Running</span>
+                                                    @else
+                                                        <span class="badge badge--danger">Failed</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="" class="on-default edit-row me-2"><strong>Details</strong></a>
+
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

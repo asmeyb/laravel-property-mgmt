@@ -148,6 +148,28 @@ class InvestmentController extends Controller
     }
     /// End Method 
 
+    public function MyInvestment()
+    {
+
+        $investments = Investment::with(['property', 'installments'])
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get();
+
+        foreach ($investments as $investment) {
+            if ($investment->payment_type === 'installment' && $investment->payment_status !== 'paid') {
+                $paidAmount = $investment->down_payment + $investment->installments->where('status', 'paid')->sum('amount');
+                $investment->due_amount = $investment->total_amount - $paidAmount;
+            } else {
+                $investment->due_amount = 0;
+            }
+
+        }
+
+        return view('home.dashboard.my_investment', compact('investments'));
+    }
+    // End Method
+
 
 
 
