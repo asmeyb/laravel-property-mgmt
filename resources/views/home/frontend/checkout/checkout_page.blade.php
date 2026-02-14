@@ -6,7 +6,7 @@
         <div class="container">
             <h3>{{ $property->title }}</h3>
 
-            <form action="" method="POST">
+            <form action="{{ route('investment.store') }}" method="POST">
                 @csrf
 
                 <!--- Property Identification   --->
@@ -44,7 +44,7 @@
                 <input type="hidden" name="total_share" value="{{ $property->total_share }}">
 
                 <input type="hidden" name="payment_type"
-                    value="{{ strtolower($property->investment_type) == 'Investment-By-Installment' ? 'installment' : 'full' }}">
+                    value="{{ strtolower($property->investment_type) == 'investment-by-installment' ? 'installment' : 'full' }}">
 
 
                 <div class="row g-4 mb-4">
