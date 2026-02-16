@@ -10,37 +10,34 @@ use App\Models\Installment;
 use App\Models\Investment;
 use App\Models\Property;
 use App\Models\Profit;
-use App\Models\Diposit;
+use App\Models\Deposit;
 use App\Models\Time;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class InvestmentController extends Controller
 {
-    public function UserInvestProperty($slug)
-    {
-        $property = Property::where('slug', $slug)
-            ->withCount([
-                'investments as sold_shares' => function ($query) {
-                    $query->select(DB::raw('SUM(share_count)'));
-                }
-            ])
+    public function UserInvestProperty($slug){
+        $property = Property::where('slug',$slug)
+            ->withCount(['investments as sold_shares' => function($query){
+                $query->select(DB::raw('SUM(share_count)'));
+            }])
             ->firstOrFail();
         $availableShare = max(0, ($property->total_share - $property->sold_shares));
 
-        return view('home.frontend.checkout.checkout_page', compact('property', 'availableShare'));
+        return view('home.frontend.checkout.checkout_page',compact('property','availableShare'));
     }
     /// End Method 
 
-    public function InvestmentStore(Request $request)
-    {
+    public function InvestmentStore(Request $request){
 
         // Validation 
         if ($request->payment_type === 'installment') {
-            $request->validate([
-                'down_payment' => 'required|numeric',
-                'time_id' => 'required|exists:times,id',
-                'total_installment' => 'required'
-            ]);
+           $request->validate([
+            'down_payment' => 'required|numeric',
+            'time_id' => 'required|exists:times,id',
+            'total_installment' => 'required' 
+           ]);
         }
 
         if ($request->profit_schedule === 'Repeated-Time') {
@@ -63,18 +60,20 @@ class InvestmentController extends Controller
         $installmentAmount = 0;
         $time = null;
 
-        if ($request->payment_type === 'installment') {
-            $downPayment = ($request->down_payment / 100) * $totalAmount;
-            $remainingAmount = $totalAmount - $downPayment;
-            $installmentAmount = $remainingAmount / $request->total_installment;
-            $time = Time::findOrFail($request->time_id);
+        if ($request->payment_type === 'installment' ) {
+           $downPayment = ($request->down_payment / 100) * $totalAmount;
+           $remainingAmount = $totalAmount - $downPayment;
+           $installmentAmount = $remainingAmount / $request->total_installment;
+           $time = Time::findOrFail($request->time_id);
         }
 
-        $paymentStatus = ($request->payment_type === 'full') ? 'paid' : 'pending';
+        $paymentStatus = ($request->payment_type === 'full') ? 'paid' :'pending';
         $transactionId = null;
 
         // Wrap DB action for invenstment Table 
-        DB::transaction(function () use ($request, $property, $perShareAmount, $totalAmount, $downPayment, $installmentAmount, $time, $paymentStatus, $transactionId, ) {
+        DB::transaction(function () use (
+            $request,$property, $perShareAmount, $totalAmount ,$downPayment ,$installmentAmount, $time,$paymentStatus,$transactionId,
+        ){
             $investment = Investment::create([
                 'user_id' => auth()->id(),
                 'property_id' => $property->id,
@@ -88,57 +87,57 @@ class InvestmentController extends Controller
                 'status' => 'active',
                 'approved_by_admin' => ($request->payment_method === 'cash'),
                 'investment_date' => now(),
-                'time_id' => $request->time_id,
+                'time_id' => $request->time_id, 
             ]);
 
-            /// Store data in our Installment Table 
+        /// Store data in our Installment Table 
 
-            if ($request->payment_type === 'installment') {
+        if ($request->payment_type === 'installment') {
+            Installment::create([
+                'investment_id' => $investment->id,
+                'amount' => $downPayment,
+                'next_time' => now(),
+                'paid_time' => now(),
+                'status' => 'paid'
+            ]);
+
+            for ($i=1; $i <= $request->total_installment ; $i++) { 
                 Installment::create([
                     'investment_id' => $investment->id,
-                    'amount' => $downPayment,
-                    'next_time' => now(),
-                    'paid_time' => now(),
-                    'status' => 'paid'
+                    'amount' => $installmentAmount,
+                    'next_time' => now()->addMonths($i * $time->interval_months),
+                    'status' => 'due'
                 ]);
-
-                for ($i = 1; $i <= $request->total_installment; $i++) {
-                    Installment::create([
-                        'investment_id' => $investment->id,
-                        'amount' => $installmentAmount,
-                        'next_time' => now()->addMonths($i * $time->interval_months),
-                        'status' => 'due'
-                    ]);
-                }
-
             }
 
-            /// add data in Profit table 
+        }
 
-            $profitAmount = 0;
-            if ($request->profit_type === 'fixed') {
-                $profitAmount = $property->profit_amount ?? 0;
-            } else {
-                $profitAmount = $property->minimum_profit_amount ?? 0;
+        /// add data in Profit table 
+
+        $profitAmount = 0;
+        if ($request->profit_type === 'fixed') {
+           $profitAmount = $property->profit_amount ?? 0;
+        } else {
+            $profitAmount = $property->minimum_profit_amount ?? 0;
+        }
+
+        $profitAmount *= $request->share_count;
+
+        if ($profitAmount > 0 && $request->profit_schedule === 'Repeated-Time' && $request->repeat_time > 0 ) {
+            for ($i=1; $i <= $request->repeat_time ; $i++) { 
+                Profit::create([
+                    'investment_id' => $investment->id,
+                    'user_id' => auth()->id(),
+                    'property_id' => $property->id,
+                    'profit_amount' => $profitAmount,
+                    'paid_date' => now()->addMonths($i),
+                    'status' => 'pending',
+                ]);
             }
+        } 
+      }); 
 
-            $profitAmount *= $request->share_count;
-
-            if ($profitAmount > 0 && $request->profit_schedule === 'Repeated-Time' && $request->repeat_time > 0) {
-                for ($i = 1; $i <= $request->repeat_time; $i++) {
-                    Profit::create([
-                        'investment_id' => $investment->id,
-                        'user_id' => auth()->id(),
-                        'property_id' => $property->id,
-                        'profit_amount' => $profitAmount,
-                        'paid_date' => now()->addMonths($i),
-                        'status' => 'pending',
-                    ]);
-                }
-            }
-        });
-
-        $notification = array(
+       $notification = array(
             'message' => 'Investment Submitted Successfully',
             'alert-type' => 'success'
         );
@@ -146,40 +145,107 @@ class InvestmentController extends Controller
         return redirect()->route('my.investment')->with($notification);
 
     }
-    /// End Method 
+     /// End Method 
 
-    public function MyInvestment()
-    {
+      public function MyInvestment(){
 
-        $investments = Investment::with(['property', 'installments'])
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->get();
+        $investments = Investment::with(['property','installments'])
+                    ->where('user_id',auth()->id())
+                    ->latest()
+                    ->get();
 
-        foreach ($investments as $investment) {
+        foreach($investments as $investment){
             if ($investment->payment_type === 'installment' && $investment->payment_status !== 'paid') {
-                $paidAmount = $investment->down_payment + $investment->installments->where('status', 'paid')->sum('amount');
-                $investment->due_amount = $investment->total_amount - $paidAmount;
+               $paidAmount = $investment->down_payment + $investment->installments->where('status','paid')->sum('amount');
+               $investment->due_amount = $investment->total_amount - $paidAmount;
             } else {
                 $investment->due_amount = 0;
             }
 
-        }
+        } 
 
         return view('home.dashboard.my_investment', compact('investments'));
-    }
-    // End Method
+     }
+     // End Method
 
-    public function ViewInstallment($id)
-    {
-        $investment = Investment::with('installments','property')->findOrFail($id);
+     public function ViewInstallment($id){
+        $investment = Investment::with('property','installments')->findOrFail($id);
+        return view('home.dashboard.all_installment',compact('investment'));
 
-        if ($investment->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized Access');
+     }
+     // End Method
+
+     public function InstallmentPay($id){
+
+        $installment = Installment::with(['investment.property','investment.installments'])->findOrFail($id);
+        $investment = $installment->investment;
+        $property = $investment->property;
+
+        $hasDownPayment = $property->down_payment > 0;
+
+        // get installment position in collection
+        $installmentIndex = $investment->installments->search(function($item) use ($installment){
+            return $item->id === $installment->id;
+        });
+
+        $effectiveIndex = $hasDownPayment ? $installmentIndex : $installmentIndex + 1;
+
+    if ($installmentIndex === 0 && $hasDownPayment) {
+        $installmentType = 'Down Payment';
+    } else {
+        if ($effectiveIndex % 10 == 1 && $effectiveIndex % 100 != 11) {
+            $suffix = 'st';
+        } elseif ($effectiveIndex % 10 == 2 && $effectiveIndex % 100 != 12) {
+            $suffix = 'nd';
+        }elseif ($effectiveIndex % 10 == 3 && $effectiveIndex % 100 != 13) {
+            $suffix = 'rd';
+        } else {
+            $suffix = 'th';
         }
 
-        return view('home.dashboard.all_installment', compact('investment'));
+        $installmentType = $effectiveIndex . $suffix . ' Installment'; 
+    } 
+    return view('home.dashboard.deposit_money',compact('installment','installmentType'));
+
+     }
+       // End Method
+
+    public function PayInstallmentStore(Request $request){
+
+        $request->validate([
+            'property_id' => 'required|exists:properties,id',
+            'installment_id' => 'required|exists:installments,id',
+            'payment_type' => 'required',
+            'amount' => 'required'
+        ]);
+
+        /// Save this to Diposit
+        $diposit = Deposit::create([
+            'user_id' => auth()->id(),
+            'property_id' => $request->property_id,
+            'installment_id' => $request->installment_id,
+            'amount' => $request->amount,
+            'charge' => $request->charge,
+            'total_amount' => $request->total_amount,
+            'payment_type' => $request->payment_type,
+            'trx' => strtoupper(Str::random(12)),
+            'status' => 'pending',
+        ]);
+
+        Installment::where('id',$request->installment_id)->update([
+            'status' => 'processing',
+            'paid_time' => now(),
+        ]);
+
+        $notification = array(
+            'message' => 'Installment Payment Submited Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('my.investment')->with($notification);
+
     }
+     // End Method
 
 
 

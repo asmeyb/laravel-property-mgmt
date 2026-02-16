@@ -20,8 +20,8 @@ return new class extends Migration
             $table->decimal('charge', 12, 2)->default(0.00);
             $table->decimal('total_amount', 12, 2);
             $table->string('payment_type')->nullable();
-            $table->string('trx_id')->nullable();            
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('trx')->nullable();            
+            $table->enum('status', ['pending', 'approved', 'rejected','processing'])->default('pending');
             
             $table->timestamps();
 

@@ -13,15 +13,11 @@ class Investment extends Model
     }
 
     public function property(){
-        return $this->belongsTo(Property::class, 'property_id');
+        return $this->belongsTo(Property::class);
     }
 
-     public function time(){
-        return $this->belongsTo(Time::class, 'time_id');
-    }
-
-    public function installments(){
-        return $this->hasMany(Installment::class, 'investment_id');
+     public function installments(){
+        return $this->hasMany(Installment::class);
     }
 
 }
