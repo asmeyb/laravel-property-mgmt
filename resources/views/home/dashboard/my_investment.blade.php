@@ -51,7 +51,7 @@
                                         @foreach ($investments as $investment)
                                             <tr>
                                                 <td>
-                                                    <a href="#">
+                                                    <a href="{{ route('property.details', $investment->property->slug) }}" class="text--base">
                                                         <strong>{{ $investment->property->title }}</strong>
                                                     </a>
                                                 </td>
@@ -75,8 +75,7 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="" class="on-default edit-row me-2"><strong>Details</strong></a>
-
+                                                    <a href="{{ route('view.installment', $investment->id) }}" class="on-default edit-row me-2"><strong>Details</strong></a>
                                                 </td>
                                             </tr>
                                         @endforeach

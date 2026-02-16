@@ -170,7 +170,16 @@ class InvestmentController extends Controller
     }
     // End Method
 
+    public function ViewInstallment($id)
+    {
+        $investment = Investment::with('installments','property')->findOrFail($id);
 
+        if ($investment->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized Access');
+        }
+
+        return view('home.dashboard.all_installment', compact('investment'));
+    }
 
 
 

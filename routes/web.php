@@ -46,6 +46,7 @@ Route::controller(InvestmentController::class)->group(function(){
     Route::post('/investment/store', 'InvestmentStore')->name('investment.store');
 
     Route::get('/my/investment', 'MyInvestment')->name('my.investment'); 
+    Route::get('/view/installment/{id}', 'ViewInstallment')->name('view.installment');
    
 
 });
@@ -106,9 +107,6 @@ Route::controller(PropertyController::class)->group(function(){
 });
 
 
-
-
-
 });
 
 /// End Admin Role Access Started
@@ -127,6 +125,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 }); 
 
 require __DIR__.'/auth.php';
