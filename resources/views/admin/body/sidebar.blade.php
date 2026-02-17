@@ -50,17 +50,17 @@
                     <li class="nav-parent">
                         <a class="nav-link" href="#">
                             <i class="bx bx-file" aria-hidden="true"></i>
-                            <span>Pages</span>
+                            <span>Deposits</span>
                         </a>
                         <ul class="nav nav-children">
                             <li>
-                                <a class="nav-link" href="pages-signup.html">
-                                    Sign Up
+                                <a class="nav-link" href="{{ route('pending.deposits') }}">
+                                    Pending Deposits
                                 </a>
                             </li>
                             <li>
-                                <a class="nav-link" href="pages-signin.html">
-                                    Sign In
+                                <a class="nav-link" href="{{ route('approved.deposits') }}">
+                                    Approved Deposits
                                 </a>
                             </li>
 

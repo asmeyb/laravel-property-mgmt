@@ -190,22 +190,27 @@ class InvestmentController extends Controller
 
         $effectiveIndex = $hasDownPayment ? $installmentIndex : $installmentIndex + 1;
 
-    if ($installmentIndex === 0 && $hasDownPayment) {
-        $installmentType = 'Down Payment';
-    } else {
-        if ($effectiveIndex % 10 == 1 && $effectiveIndex % 100 != 11) {
+        if ($installmentIndex === 0 && $hasDownPayment) 
+        {
+            $installmentType = 'Down Payment';
+        } 
+        else {
+            if ($effectiveIndex % 10 == 1 && $effectiveIndex % 100 != 11) {
             $suffix = 'st';
-        } elseif ($effectiveIndex % 10 == 2 && $effectiveIndex % 100 != 12) {
+        } 
+        elseif ($effectiveIndex % 10 == 2 && $effectiveIndex % 100 != 12) {
             $suffix = 'nd';
-        }elseif ($effectiveIndex % 10 == 3 && $effectiveIndex % 100 != 13) {
+        }
+        elseif ($effectiveIndex % 10 == 3 && $effectiveIndex % 100 != 13) {
             $suffix = 'rd';
-        } else {
+        } 
+        else {
             $suffix = 'th';
         }
 
         $installmentType = $effectiveIndex . $suffix . ' Installment'; 
     } 
-    return view('home.dashboard.deposit_money',compact('installment','installmentType'));
+        return view('home.dashboard.deposit_money',compact('installment','installmentType'));
 
      }
        // End Method

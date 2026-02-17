@@ -7,6 +7,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\InvestmentController;
+use App\Http\Controllers\Admin\DepositController;
 use App\Http\Controllers\User\UserController;
 
 Route::get('/', function () {
@@ -84,6 +85,14 @@ Route::controller(PropertyController::class)->group(function(){
     Route::get('/edit/times/{id}', 'EditTimes')->name('edit.times');
     Route::post('/update/times', 'UpdateTimes')->name('update.times');
     Route::get('/delete/times/{id}', 'DeleteTimes')->name('delete.times');
+
+});
+
+Route::controller(DepositController::class)->group(function(){
+    Route::get('/pending/deposits', 'PendingDeposits')->name('pending.deposits');
+    Route::get('/approved/deposits', 'ApprovedDeposits')->name('approved.deposits');
+    Route::get('/deposit/details/{id}', 'DepositDetails')->name('deposit.details');
+    
 
 });
 
