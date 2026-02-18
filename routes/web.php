@@ -89,9 +89,10 @@ Route::controller(PropertyController::class)->group(function(){
 });
 
 Route::controller(DepositController::class)->group(function(){
-    Route::get('/pending/deposits', 'PendingDeposits')->name('pending.deposits');
-    Route::get('/approved/deposits', 'ApprovedDeposits')->name('approved.deposits');
-    Route::get('/deposit/details/{id}', 'DepositDetails')->name('deposit.details');
+    Route::get('/pending/deposit', 'PendingDeposit')->name('pending.deposit');
+    Route::get('/approved/deposit', 'ApprovedDeposits')->name('approved.deposit');
+    Route::get('/deposit/details/{id}', 'DepositDetails')->name('deposit.details'); 
+    Route::post('/admin/deposit/status/update/{id}', 'AdminDepositeStatusUpdate')->name('admin.deposit.status.update'); 
     
 
 });

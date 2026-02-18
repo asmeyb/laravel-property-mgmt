@@ -225,7 +225,9 @@ $startDate = \Carbon\Carbon::parse($investment->created_at);
             </li> 
         </ul>
 
-    <form action="">
+    <form action="{{ route('admin.deposit.status.update',$details->id) }}" method="POST">
+        @csrf 
+
         @if ( $details->status != 'approved')
         <button type="submit" name="action" value="approved" class="btn btn-success">Approve</button> 
         @endif

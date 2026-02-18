@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 class DepositController extends Controller
 {
-    public function PendingDeposits()
+    public function PendingDeposit()
     {
          $pendingDeposits = Deposit::with(['user','property','installment.investment.property'])->where('status','pending')->latest()->get();
         // dd($pendingDeposits);
@@ -27,7 +27,11 @@ class DepositController extends Controller
 
     public function ApprovedDeposits()
     {
-        return view('admin.backend.deposit.approved_deposit');
+        
+        $approvedDeposits = Deposit::with(['user','property','installment.investment.property'])->where('status','approved')->latest()->get();
+        // dd($approvedDeposits);
+
+        return view('admin.backend.deposit.approved_deposit', compact('approvedDeposits'));
     }
 
     public function DepositDetails($id)
@@ -43,5 +47,44 @@ class DepositController extends Controller
         $investment = Investment::with(['user','property','installments'])->findOrFail($investmentId);
 
         return view('admin.backend.deposit.deposit_details', compact('details'));
+    }
+
+    public function AdminDepositeStatusUpdate(Request $request , $id){
+
+        $deposit = Deposit::findOrFail($id);
+        $action = $request->input('action');
+
+        if ($action === 'approved') {
+            $deposit->status = 'approved';
+
+            if ($deposit->installment_id) {
+               $installment = Installment::find($deposit->installment_id);
+               if ($installment) {
+                 $installment->status = 'paid';
+                 $installment->paid_time = now();
+                 $installment->save();
+               }
+            } 
+
+        } elseif ($action === 'rejected') {
+           $deposit->status = 'rejected';
+
+            if ($deposit->installment_id) {
+               $installment = Installment::find($deposit->installment_id);
+               if ($installment) {
+                 $installment->status = 'due';
+                 $installment->paid_time = null;
+                 $installment->save();
+               }
+            } 
+        }
+
+        $deposit->save();
+
+        $notification = array(
+            'message' => 'Deposti Status updated Successfully',
+            'alert-type' => 'success'
+        ); 
+        return redirect()->route('pending.deposit')->with($notification); 
     }
 }
