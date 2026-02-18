@@ -23,6 +23,10 @@ class Investment extends Model
         return $this->belongsTo(User::class);
     }
     
+    public function capitalReturn()
+    {
+        return $this->hasOne(CapitalReturn::class);
+    }
 
 
 }
