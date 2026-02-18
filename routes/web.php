@@ -7,6 +7,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\InvestmentController;
+use App\Http\Controllers\Admin\ManageInvestmentController;
 use App\Http\Controllers\Admin\DepositController;
 use App\Http\Controllers\User\UserController;
 
@@ -23,7 +24,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard'); 
 
 
- Route::get('/user/logout', [UserController::class, 'UserLogout'])->name('user.logout');  
+Route::get('/user/logout', [UserController::class, 'UserLogout'])->name('user.logout');  
 
 
 Route::controller(UserController::class)->group(function(){
@@ -51,7 +52,10 @@ Route::controller(InvestmentController::class)->group(function(){
 
     Route::get('/installment/pay/{id}', 'InstallmentPay')->name('installment.pay');
     Route::post('/installment/pay/store', 'PayInstallmentStore')->name('pay.installment.store');
-   
+    
+    Route::get('/all/investment', 'AllInvestment')->name('all.investment');
+    Route::get('/running/investment', 'RunningInvestment')->name('running.investment');
+    Route::get('/complete/investment', 'CompleteInvestment')->name('complete.investment');
 
 });
 
@@ -124,6 +128,14 @@ Route::controller(DepositController::class)->group(function(){
     Route::put('/installment/status/update/{id}', 'InstallmentStatusUpdate')->name('installment.status.update'); 
     Route::get('/approved/downpayment', 'ApprovedDownpayment')->name('approved.downpayment');
    
+});
+
+Route::controller(ManageInvestmentController::class)->group(function(){
+      
+    Route::get('/all/investment', 'AllInvestment')->name('all.investment');
+    Route::get('/running/investment', 'RunningInvestment')->name('running.investment');
+    Route::get('/complete/investment', 'CompleteInvestment')->name('complete.investment');
+
 });
 
 
