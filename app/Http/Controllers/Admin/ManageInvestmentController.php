@@ -106,4 +106,11 @@ class ManageInvestmentController extends Controller
             ->get();
         return view('admin.backend.investment.property_details', compact('allInvestments', 'investment'));
     }
+
+    public function UserPayHistory($id)
+    {
+        $investment = Investment::with(['property', 'user','installments'])->findOrFail($id);
+        // $installments = Installment::where('investment_id', $id)->latest()->get();
+        return view('admin.backend.investment.user_pay_history', compact('investment'));
+    }
 }
