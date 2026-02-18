@@ -14,6 +14,7 @@ use App\Models\Deposit;
 use App\Models\Time;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use function PHPUnit\Framework\returnArgument;
 
 class DepositController extends Controller
 {
@@ -87,4 +88,48 @@ class DepositController extends Controller
         ); 
         return redirect()->route('pending.deposit')->with($notification); 
     }
+
+    public function PendingDownpayment(){
+
+        $installments = Installment::with(['investment.property','investment.user','deposit'])->where('down_payment', '>',0)->where('status','processing')->get();
+
+        return view('admin.backend.downpayment.pending_downpayment',compact('installments'));
+
+    }
+
+    public function InstallmentStatusUpdate(Request $request, $id){
+
+        $installment = Installment::findOrFail($id);
+        // $action = $request->input('action');
+
+        if ($installment->status === 'processing') 
+        {
+            $installment->status = 'paid';
+            $installment->paid_time = now();
+            $installment->amount += $installment->down_payment; 
+            $installment->save();
+
+            // Update the related Deposit status if it exists
+            if($installment->deposit){
+                $installment->deposit->status = 'approved';
+                $installment->deposit->save();
+            }
+        } 
+
+        // $installment->save();
+
+        $notification = array(
+            'message' => 'Downpayment Status updated Successfully',
+            'alert-type' => 'success'
+        ); 
+        return redirect()->route('pending.downpayment')->with($notification);
+    }
+
+    public function ApprovedDownpayment(){
+
+        $installments = Installment::with(['investment.property','investment.user','deposit'])->where('down_payment', '>',0)->where('status','paid')->get();
+
+        return view('admin.backend.downpayment.approved_downpayment',compact('installments'));
+    }
 }
+    

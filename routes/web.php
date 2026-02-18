@@ -88,15 +88,6 @@ Route::controller(PropertyController::class)->group(function(){
 
 });
 
-Route::controller(DepositController::class)->group(function(){
-    Route::get('/pending/deposit', 'PendingDeposit')->name('pending.deposit');
-    Route::get('/approved/deposit', 'ApprovedDeposits')->name('approved.deposit');
-    Route::get('/deposit/details/{id}', 'DepositDetails')->name('deposit.details'); 
-    Route::post('/admin/deposit/status/update/{id}', 'AdminDepositeStatusUpdate')->name('admin.deposit.status.update'); 
-    
-
-});
-
 Route::controller(PropertyController::class)->group(function(){
     Route::get('/all/location', 'AllLocation')->name('all.location');
     Route::get('/add/location', 'AddLocation')->name('add.location');
@@ -119,7 +110,21 @@ Route::controller(PropertyController::class)->group(function(){
     Route::delete('/property/galleryimage-delete/{id}', 'GalleryImgDelete');
 });
 
+Route::controller(DepositController::class)->group(function(){
+    Route::get('/pending/deposit', 'PendingDeposit')->name('pending.deposit');
+    Route::get('/deposit/details/{id}', 'DepositDetails')->name('deposit.details'); 
+    Route::post('/admin/deposit/status/update/{id}', 'AdminDepositeStatusUpdate')->name('admin.deposit.status.update'); 
 
+    Route::get('/approved/deposit', 'ApprovedDeposits')->name('approved.deposit');
+   
+});
+
+Route::controller(DepositController::class)->group(function(){
+    Route::get('/pending/downpayment', 'PendingDownpayment')->name('pending.downpayment');
+    Route::put('/installment/status/update/{id}', 'InstallmentStatusUpdate')->name('installment.status.update'); 
+    Route::get('/approved/downpayment', 'ApprovedDownpayment')->name('approved.downpayment');
+   
+});
 
 
 
