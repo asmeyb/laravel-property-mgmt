@@ -30,7 +30,7 @@ class ManageInvestmentController extends Controller
                         ->with(['user', 'installments']);
                 }
             ])
-            ->get()           
+            ->get()
             ->sortByDesc('created_at')
             ->values();
         return view('admin.backend.investment.all_investment', compact('properties'));
@@ -94,5 +94,16 @@ class ManageInvestmentController extends Controller
             ->values();
         //$investments = Investment::with(['property', 'user'])->where('status', 'completed')->latest()->get();
         return view('admin.backend.investment.complete_investment', compact('properties'));
+    }
+
+    public function AdminPropertyDetails($id)
+    {
+        $investment = Investment::with(['property', 'user'])->findOrFail($id);
+        $allInvestments = Investment::with(['property', 'user', 'installments'])
+            ->where('property_id', $investment->property_id)
+            ->where('payment_status', '!=', 'failed')
+            ->where('status', 'active')
+            ->get();
+        return view('admin.backend.investment.property_details', compact('allInvestments', 'investment'));
     }
 }
