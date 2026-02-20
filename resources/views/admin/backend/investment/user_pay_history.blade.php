@@ -107,7 +107,7 @@
 
                                 <td>
                                     @if ($installment->paid_time)
-                                        {{ \Carbon\Carbon::parse($installment->paid_time)->format('Y-m-d') }}
+                                        {{ \Carbon\Carbon::parse($installment->paid_time)->format('d M, Y') }}
                                     @else
                                         <span class="text-muted">Not Paid</span>
                                     @endif
@@ -144,7 +144,7 @@
     </div>
 
 
-    {{-- ================= PROFIT HISTORY ================= --}}
+    {{-- ================= Capital Return ================= --}}
     <div class="card border-0 shadow-sm mb-4">
 
         <div class="card-header bg-primary text-white fw-semibold">
@@ -191,6 +191,51 @@
                             </td>
                         </tr>
                     @endforelse
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-primary text-white fw-semibold">
+            <h4 class="mb-0">
+                Capital Return History -
+                <span class="badge badge-danger badge-lg">
+                    {{ $investment->property->title ?? 'N/A' }}
+                </span>
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Capital Return</th>                            
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                @if ($investment->capitalReturn)
+                                    <div class="text-success">
+                                        Capital Back
+                                        ${{ $investment->capitalReturn->amount }} 
+                                        on Date 
+                                        {{ \Carbon\Carbon::parse($investment->capitalReturn->paid_date)->format('d M, Y') }}
+                                        (Transaction ID: {{ $investment->capitalReturn->trx }})
+                                    </div>
+                                @else
+                                    <span class="text-muted">No Capital Return record found</span>                                
+                                @endif
+                            </td>
+                        </tr>             
 
                     </tbody>
                 </table>
