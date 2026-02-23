@@ -158,4 +158,28 @@ class ManageInvestmentController extends Controller
         }
         // return view('admin.backend.investment.capital_back', compact('investment'));
     }
+
+    public function AdminInstallmentReport()
+    {
+        $installments = Installment::with(['investment.property', 'investment.user','investment.installments'])
+                        ->get()
+                        ->groupBy(function($item) {
+                            return optional($item->investment->user)->id;
+                        });
+
+        return view('admin.backend.reports.installment_report', compact('installments'));
+    }
+
+    public function AdminProfitReport()
+    {
+        $profits = Profit::with(['investment.property', 'investment.user'])
+            ->whereHas('investment', function ($q) {
+                $q->where('payment_status', '!=', 'failed')
+                    ->where('status', 'active');
+            })
+            ->latest()
+            ->get();
+
+        return view('admin.backend.reports.profit_report', compact('profits'));
+    }
 }

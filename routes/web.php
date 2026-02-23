@@ -141,6 +141,9 @@ Route::controller(ManageInvestmentController::class)->group(function(){
 
     Route::get('/admin/capital/back/{id}', 'AdminCapitalBack')->name('admin.capital.back');
 
+    Route::get('/admin/installment/report', 'AdminInstallmentReport')->name('installment.report');
+    Route::get('/admin/profit/report', 'AdminProfitReport')->name('profit.report');
+
 });
 
 

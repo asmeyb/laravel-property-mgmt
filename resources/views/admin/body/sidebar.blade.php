@@ -110,7 +110,25 @@
                         </ul>
                     </li>
 
+                    <li class="nav-parent">
+                        <a class="nav-link" href="#">
+                            <i class="bx bx-file" aria-hidden="true"></i>
+                            <span>Reports</span>
+                        </a>
+                        <ul class="nav nav-children">
+                            <li>
+                                <a class="nav-link" href="{{ route('installment.report') }}">
+                                    Installment Reports
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="{{ route('profit.report') }}">
+                                    Profit Reports
+                                </a>
+                            </li>
 
+                        </ul>
+                    </li>
 
                 </ul>
             </nav>
