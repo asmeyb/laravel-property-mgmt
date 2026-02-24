@@ -22,7 +22,7 @@
                 <header class="card-header">
                     
 
-                    <h2 class="card-title">Pending Profit Report</h2>
+                    <h2 class="card-title">Pending Profit Discharge</h2>
                 </header>
                 <div class="card-body">
                     <div class="table-responsive">

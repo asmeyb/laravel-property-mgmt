@@ -169,17 +169,5 @@ class ManageInvestmentController extends Controller
 
         return view('admin.backend.reports.installment_report', compact('installments'));
     }
-
-    public function AdminProfitReport()
-    {
-        $profits = Profit::with(['investment.property', 'investment.user'])
-            ->whereHas('investment', function ($q) {
-                $q->where('payment_status', '!=', 'failed')
-                    ->where('status', 'active');
-            })
-            ->latest()
-            ->get();
-
-        return view('admin.backend.reports.profit_report', compact('profits'));
-    }
+    
 }

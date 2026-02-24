@@ -125,5 +125,16 @@ class ProfitController extends Controller
         return redirect()->back()->with($notification);
     }
 
+    public function AdminProfitReport()
+    {
+        $profits = Profit::with(['property', 'investment', 'user'])
+            ->where('status', 'paid')
+            ->latest()
+            ->get()
+            ->groupBy('user_id');
+
+        return view('admin.backend.reports.profit_report', compact('profits'));
+    }
+
 
 }

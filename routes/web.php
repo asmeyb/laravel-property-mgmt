@@ -143,7 +143,7 @@ Route::controller(ManageInvestmentController::class)->group(function(){
     Route::get('/admin/capital/back/{id}', 'AdminCapitalBack')->name('admin.capital.back');
 
     Route::get('/admin/installment/report', 'AdminInstallmentReport')->name('installment.report');
-    Route::get('/admin/profit/report', 'AdminProfitReport')->name('profit.report');
+    
 
 });
 
@@ -151,7 +151,7 @@ Route::controller(ProfitController::class)->group(function () {
 
     Route::get('/admin/pending/profit', 'PendingProfit')->name('pending.profit');
     Route::post('/admin/profit/confirm/discharge', 'ProfitDischarge')->name('admin.profit.confirm.discharge');
-
+    Route::get('/admin/profit/report', 'AdminProfitReport')->name('profit.report');
 });
 
 
