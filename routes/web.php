@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\InvestmentController;
 use App\Http\Controllers\Admin\ManageInvestmentController;
 use App\Http\Controllers\Admin\DepositController;
+use App\Http\Controllers\Admin\ProfitController;
 use App\Http\Controllers\User\UserController;
 
 Route::get('/', function () {
@@ -143,6 +144,13 @@ Route::controller(ManageInvestmentController::class)->group(function(){
 
     Route::get('/admin/installment/report', 'AdminInstallmentReport')->name('installment.report');
     Route::get('/admin/profit/report', 'AdminProfitReport')->name('profit.report');
+
+});
+
+Route::controller(ProfitController::class)->group(function () {
+
+    Route::get('/admin/pending/profit', 'PendingProfit')->name('pending.profit');
+    Route::post('/admin/profit/confirm/discharge', 'ProfitDischarge')->name('admin.profit.confirm.discharge');
 
 });
 

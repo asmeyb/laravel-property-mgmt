@@ -348,9 +348,9 @@
                     <label>Profit Schedule <span class="text-danger">*</span></label>
                     <select name="profit_schedule" id="profit_schedule" class="form-control">
                         <option value="">Select One</option>
-                        <option value="One-Time">One Time</option>
-                        <option value="Life-Time">Life Time</option>
-                        <option value="Repeated-Time">Repeated Time</option>
+                        <option value="one-Time">One Time</option>
+                        <option value="life-Time">Life Time</option>
+                        <option value="repeated-Time">Repeated Time</option>
                     </select>
                 </div>
             </div>

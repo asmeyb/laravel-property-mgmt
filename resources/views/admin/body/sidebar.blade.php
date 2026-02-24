@@ -125,6 +125,9 @@
                                 <a class="nav-link" href="{{ route('profit.report') }}">
                                     Profit Reports
                                 </a>
+                                <a class="nav-link" href="{{ route('pending.profit') }}">
+                                    Pending Profits
+                                </a>
                             </li>
 
                         </ul>
