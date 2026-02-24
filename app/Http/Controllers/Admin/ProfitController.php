@@ -68,44 +68,42 @@ class ProfitController extends Controller
         $invetments = $property->Investments;
         $investorCount = $invetments->count();
 
-        if($investorCount === 0){
+        if ($investorCount === 0) {
             return back()->with(['Message', 'No investors found for this property.', 'alert-type' => 'error']);
         }
 
-        $monthlyProfit = (float) $property  ->profit_amount;
+        $monthlyProfit = (float) $property->profit_amount;
         $repeatTime = max(1, (int) ($property->repeat_time ?? 1));
         $schedule = $property->profit_schedule ?? 'monthly';
-        
-        if (in_array($schedule, ['one-time', 'life-time'])) 
-        {
+
+        if (in_array($schedule, ['one-time', 'life-time'])) {
             $plannedTotal = $monthlyProfit * $investorCount;
-        } 
-        else{
+        } else {
             $plannedTotal = $monthlyProfit * $repeatTime * $investorCount;
         }
 
         $alreadyPaid = (float) Profit::where('property_id', $property->id)
-                ->where('status', 'paid')
-                ->sum('profit_amount');
+            ->where('status', 'paid')
+            ->sum('profit_amount');
 
         $remaining = round(max(0, $plannedTotal - $alreadyPaid), 2);
 
-        if($remaining <= 0){
+        if ($remaining <= 0) {
             return back()->with(['Message', 'No pending profit to discharge for this property.', 'alert-type' => 'info']);
         }
 
         $discharge = min($monthlyProfit * $investorCount, $remaining);
 
         $dischargeCents = (int) round($discharge * 100);
-        $perInvestorCents = intdiv ($dischargeCents, $investorCount);
+        $perInvestorCents = intdiv($dischargeCents, $investorCount);
         $remaindersCents = $dischargeCents % $investorCount;
 
-        DB::transaction(function() use($invetments, $perInvestorCents, $remaindersCents, $property) {
+        DB::transaction(function () use ($invetments, $perInvestorCents, $remaindersCents, $property) {
             foreach ($invetments->values() as $index => $investment) {
                 $amountCents = $perInvestorCents + ($index < $remaindersCents ? 1 : 0);
                 $amount = $amountCents / 100;
 
-                Profit::create([                    
+                Profit::create([
                     'investment_id' => $investment->id,
                     'user_id' => $investment->user_id,
                     'property_id' => $investment->property_id,
@@ -114,7 +112,7 @@ class ProfitController extends Controller
                     'trx' => strtoupper(Str::random(16)),
                     'status' => 'paid',
                 ]);
-                
+
             }
         });
 
@@ -134,6 +132,22 @@ class ProfitController extends Controller
             ->groupBy('user_id');
 
         return view('admin.backend.reports.profit_report', compact('profits'));
+    }
+
+    public function ProfitHistory()
+    {
+        $profits = Profit::with(['property','investment'])
+                    ->where('user_id', auth()->id())
+                    ->where('status','paid')
+                    ->latest('paid_date')->orderBy('id','desc')->get();
+        
+        $investment = Investment::with('capitalReturn')
+                     ->where('user_id', auth()->id())
+                     ->whereHas('capitalReturn')
+                     ->latest()
+                     ->first();
+
+        return view('home.dashboard.profit_history',compact('profits','investment'));  
     }
 
 
