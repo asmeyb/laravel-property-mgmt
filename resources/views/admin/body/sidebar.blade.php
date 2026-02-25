@@ -1,176 +1,186 @@
-<aside id="sidebar-left" class="sidebar-left">
+	<aside id="sidebar-left" class="sidebar-left">
 
-    <div class="sidebar-header">
-        <div class="sidebar-title">
-            Navigation
-        </div>
-        <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html"
-            data-fire-event="sidebar-left-toggle">
-            <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
-        </div>
+<div class="sidebar-header">
+    <div class="sidebar-title">
+        Navigation
     </div>
+    <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+        <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+    </div>
+</div>
 
-    <div class="nano">
-        <div class="nano-content">
-            <nav id="menu" class="nav-main" role="navigation">
+<div class="nano">
+    <div class="nano-content">
+        <nav id="menu" class="nav-main" role="navigation">
 
-                <ul class="nav nav-main">
-                    <li>
-                        <a class="nav-link" href="layouts-default.html">
-                            <i class="bx bx-home-alt" aria-hidden="true"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-parent">
-                        <a class="nav-link" href="#">
-                            <i class="bx bx-cart-alt" aria-hidden="true"></i>
-                            <span>Investments </span>
-                        </a>
-                        <ul class="nav nav-children">
-                            <li>
-                                <a class="nav-link" href="{{ route('all.investment') }}">
-                                    All Investments
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('complete.investment') }}">
-                                    Complete Investments
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('running.investment') }}">
-                                    Running Investments
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('pending.profit') }}">
-                                    Pending Profits
-                                </a>
-                            </li>
+            <ul class="nav nav-main">
+                <li>
+                    <a class="nav-link" href="layouts-default.html">
+                        <i class="bx bx-home-alt" aria-hidden="true"></i>
+                        <span>Dashboard</span>
+                    </a>                        
+                </li>
 
-                        </ul>
-                    </li>
-                    <li class="nav-parent">
-                        <a class="nav-link" href="#">
-                            <i class="bx bx-cart-alt" aria-hidden="true"></i>
-                            <span>Properties </span>
-                        </a>
-                        <ul class="nav nav-children">
-                            <li>
-                                <a class="nav-link" href="{{ route('all.property') }}">
-                                    All Property
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('all.times') }}">
-                                    Manage Time
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('all.location') }}">
-                                    Manage Location
-                                </a>
-                            </li>
 
-                        </ul>
-                    </li>
+<li class="nav-parent">
+    <a class="nav-link" href="#">
+        <i class="bx bx-cart-alt" aria-hidden="true"></i>
+        <span>Investment </span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a class="nav-link" href="{{ route('running.investment') }}">
+                Running Investment 
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('complete.investment') }}">
+                Completed Investment 
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('all.investment') }}">
+                 All Investment 
+            </a>
+        </li>
 
-                    <li class="nav-parent">
-                        <a class="nav-link" href="#">
-                            <i class="bx bx-file" aria-hidden="true"></i>
-                            <span>Down Payments</span>
-                        </a>
-                        <ul class="nav nav-children">
-                            <li>
-                                <a class="nav-link" href="{{ route('pending.downpayment') }}">
-                                    Pending Down Payment
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('approved.downpayment') }}">
-                                    Approved Down Payment
-                                </a>
-                            </li>
+         <li>
+            <a class="nav-link" href="{{ route('pending.profit') }}">
+               Pending Profit 
+            </a>
+        </li>
+            
+    </ul>
+</li>
 
-                        </ul>
-                    </li>
+<li class="nav-parent">
+    <a class="nav-link" href="#">
+        <i class="bx bx-cart-alt" aria-hidden="true"></i>
+        <span>Properties </span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a class="nav-link" href="{{ route('all.property') }}">
+                All Property 
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('all.times') }}">
+                Manage Time
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('all.location') }}">
+                Manage Location
+            </a>
+        </li>
+            
+    </ul>
+</li>
 
-                    <li class="nav-parent">
-                        <a class="nav-link" href="#">
-                            <i class="bx bx-file" aria-hidden="true"></i>
-                            <span>Deposits</span>
-                        </a>
-                        <ul class="nav nav-children">
-                            <li>
-                                <a class="nav-link" href="{{ route('pending.deposit') }}">
-                                    Pending Deposits
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('approved.deposit') }}">
-                                    Approved Deposits
-                                </a>
-                            </li>
 
-                        </ul>
-                    </li>
+<li class="nav-parent">
+    <a class="nav-link" href="#">
+        <i class="bx bx-file" aria-hidden="true"></i>
+        <span>Down Payment</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a class="nav-link" href="{{ route('pending.downpayment') }}">
+                Pending Downpayment
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('approved.downpayment') }}">
+              Approved Downpayment
+            </a>
+        </li>
+        
+    </ul>
+</li>
+            
 
-                    <li class="nav-parent">
-                        <a class="nav-link" href="#">
-                            <i class="bx bx-file" aria-hidden="true"></i>
-                            <span>Reports</span>
-                        </a>
-                        <ul class="nav nav-children">
-                            <li>
-                                <a class="nav-link" href="{{ route('installment.report') }}">
-                                    Installment Reports
-                                </a>
-                            </li>
-                            <li>
-                                <a class="nav-link" href="{{ route('profit.report') }}">
-                                    Profit Reports
-                                </a>                                
-                            </li>
 
-                        </ul>
-                    </li>
+<li class="nav-parent">
+    <a class="nav-link" href="#">
+        <i class="bx bx-file" aria-hidden="true"></i>
+        <span>Deposits</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a class="nav-link" href="{{ route('pending.deposit') }}">
+                Pending Deposits
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('approved.deposit') }}">
+              Approved Deposits
+            </a>
+        </li>
+        
+    </ul>
+</li>
 
-                </ul>
-            </nav>
 
-            <hr class="separator" />
 
-            <div class="sidebar-widget widget-tasks">
-                <div class="widget-header">
-                    <h6>Projects</h6>
-                    <div class="widget-toggle">+</div>
-                </div>
-                <div class="widget-content">
-                    <ul class="list-unstyled m-0">
-                        <li><a href="#">Porto HTML5 Template</a></li>
-                        <li><a href="#">Tucson Template</a></li>
-                        <li><a href="#">Porto Admin</a></li>
-                    </ul>
-                </div>
+<li class="nav-parent">
+    <a class="nav-link" href="#">
+        <i class="bx bx-file" aria-hidden="true"></i>
+        <span>Reports</span>
+    </a>
+    <ul class="nav nav-children">
+        <li>
+            <a class="nav-link" href="{{ route('intallment.report') }}">
+                Installment Reports
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ route('profit.report') }}">
+              Profit Reports
+            </a>
+        </li>
+        
+    </ul>
+</li>
+             
+                 
+
+            </ul>
+        </nav>
+
+        <hr class="separator" />
+
+        <div class="sidebar-widget widget-tasks">
+            <div class="widget-header">
+                <h6>Projects</h6>
+                <div class="widget-toggle">+</div>
             </div>
-
-            <hr class="separator" />
-
-
+            <div class="widget-content">
+                <ul class="list-unstyled m-0">
+                    <li><a href="#">Porto HTML5 Template</a></li>
+                    <li><a href="#">Tucson Template</a></li>
+                    <li><a href="#">Porto Admin</a></li>
+                </ul>
+            </div>
         </div>
 
-        <script>
-            // Maintain Scroll Position
-            if (typeof localStorage !== 'undefined') {
-                if (localStorage.getItem('sidebar-left-position') !== null) {
-                    var initialPosition = localStorage.getItem('sidebar-left-position'),
-                        sidebarLeft = document.querySelector('#sidebar-left .nano-content');
+        <hr class="separator" />
 
-                    sidebarLeft.scrollTop = initialPosition;
-                }
-            }
-        </script>
-
+         
     </div>
+
+    <script>
+        // Maintain Scroll Position
+        if (typeof localStorage !== 'undefined') {
+            if (localStorage.getItem('sidebar-left-position') !== null) {
+                var initialPosition = localStorage.getItem('sidebar-left-position'),
+                    sidebarLeft = document.querySelector('#sidebar-left .nano-content');
+
+                sidebarLeft.scrollTop = initialPosition;
+            }
+        }
+    </script>
+
+</div>
 
 </aside>

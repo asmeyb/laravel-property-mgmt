@@ -7,10 +7,10 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\InvestmentController;
-use App\Http\Controllers\Admin\ManageInvestmentController;
 use App\Http\Controllers\Admin\DepositController;
-use App\Http\Controllers\Admin\ProfitController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Admin\ManageInvestmentController;
+use App\Http\Controllers\Admin\ProfitController;
 
 Route::get('/', function () {
     return view('home.index');
@@ -25,13 +25,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard'); 
 
 
-Route::get('/user/logout', [UserController::class, 'UserLogout'])->name('user.logout');  
+ Route::get('/user/logout', [UserController::class, 'UserLogout'])->name('user.logout');  
 
 
-Route::controller(UserController::class)->group(function(){   
+Route::controller(UserController::class)->group(function(){
     
-    Route::get('/deposit/money', 'DepositMoney')->name('deposit.money');
-    Route::get('/withdraw/money', 'WithdrawMoney')->name('withdraw.money');
+    Route::get('/deposit/money', 'DepositMoney')->name('deposit.money'); 
     Route::get('/transactions', 'Transactions')->name('transactions');
     Route::get('/profile/setting', 'ProfileSetting')->name('profile.setting');
     Route::get('/user/change/password', 'UserChangePassword')->name('user.change.password');
@@ -52,17 +51,16 @@ Route::controller(InvestmentController::class)->group(function(){
 
     Route::get('/installment/pay/{id}', 'InstallmentPay')->name('installment.pay');
     Route::post('/installment/pay/store', 'PayInstallmentStore')->name('pay.installment.store');
-    
-    Route::get('/all/investment', 'AllInvestment')->name('all.investment');
-    Route::get('/running/investment', 'RunningInvestment')->name('running.investment');
-    Route::get('/complete/investment', 'CompleteInvestment')->name('complete.investment');
+   
 
 });
 
 Route::controller(ProfitController::class)->group(function(){
     Route::get('/profit/history', 'ProfitHistory')->name('profit.history');
-    
+    Route::get('/withdraw/money', 'WithdrawMoney')->name('withdraw.money');
+    Route::post('/deposit/withdraw', 'DepositWithdraw')->name('deposit.withdraw');
 });
+
 
 
 
@@ -130,33 +128,32 @@ Route::controller(DepositController::class)->group(function(){
 
 Route::controller(DepositController::class)->group(function(){
     Route::get('/pending/downpayment', 'PendingDownpayment')->name('pending.downpayment');
-    Route::put('/installment/status/update/{id}', 'InstallmentStatusUpdate')->name('installment.status.update'); 
-    Route::get('/approved/downpayment', 'ApprovedDownpayment')->name('approved.downpayment');
+    Route::put('/installment/status/update/{id}', 'UpdateInstallmentStatus')->name('installment.status.update');
+    Route::get('/approved/downpayment', 'ApprovedDownpayment')->name('approved.downpayment'); 
+});
+
+
+Route::controller(ManageInvestmentController::class)->group(function(){
+    Route::get('/running/investment', 'RunningInvestment')->name('running.investment');
+    Route::get('/complete/investment', 'CompleteInvestment')->name('complete.investment');
+    Route::get('/all/investment', 'AllInvestment')->name('all.investment');
+    
+    Route::get('/admin/property/details/{id}', 'AdminPropertyDetails')->name('admin_property_details');
+    Route::get('/user/pay/history/{id}', 'UserPayHistory')->name('user.pay.history');
+    Route::get('/admin/capital/back/{id}', 'AdminCapitalBack')->name('admin.capital.back');
+
+    Route::get('/admin/intallment/report', 'AdminInstallmentReport')->name('intallment.report');
+    
+});
+
+
+Route::controller(ProfitController::class)->group(function(){
+    Route::get('/pending/profit', 'PendingProfit')->name('pending.profit');
+    Route::post('/admin/profit/discharge', 'AdminProfitDischarge')->name('admin.profit.discharge');
+    Route::get('/profit/report', 'ProfitReport')->name('profit.report');
    
 });
 
-Route::controller(ManageInvestmentController::class)->group(function(){
-      
-    Route::get('/all/investment', 'AllInvestment')->name('all.investment');
-    Route::get('/running/investment', 'RunningInvestment')->name('running.investment');
-    Route::get('/complete/investment', 'CompleteInvestment')->name('complete.investment');
-
-    Route::get('/admin/property/details/{id}', 'AdminPropertyDetails')->name('admin_property_details');
-    Route::get('/user/pay/history/{id}', 'UserPayHistory')->name('user.pay.history');
-
-    Route::get('/admin/capital/back/{id}', 'AdminCapitalBack')->name('admin.capital.back');
-
-    Route::get('/admin/installment/report', 'AdminInstallmentReport')->name('installment.report');
-    
-
-});
-
-Route::controller(ProfitController::class)->group(function () {
-
-    Route::get('/admin/pending/profit', 'PendingProfit')->name('pending.profit');
-    Route::post('/admin/profit/confirm/discharge', 'ProfitDischarge')->name('admin.profit.confirm.discharge');
-    Route::get('/admin/profit/report', 'AdminProfitReport')->name('profit.report');
-});
 
 
 

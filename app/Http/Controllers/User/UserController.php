@@ -29,10 +29,7 @@ class UserController extends Controller
    }
    // End Method
 
-   public function WithdrawMoney()
-   {
-      return view('home.dashboard.withdraw_money');
-   }
+   
    // End Method
 
    public function Transactions()

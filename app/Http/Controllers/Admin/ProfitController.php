@@ -15,6 +15,7 @@ use App\Models\Time;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\CapitalReturn;
+use App\Models\Withdraw;
 
 class ProfitController extends Controller
 {
@@ -62,14 +63,15 @@ class ProfitController extends Controller
     }
     //End Method 
 
-    public function ProfitDischarge(Request $request)
+    public function AdminProfitDischarge(Request $request)
     {
+
         $property = Property::with(['investments'])->findOrFail($request->property_id);
-        $invetments = $property->Investments;
-        $investorCount = $invetments->count();
+        $investments = $property->investments;
+        $investorCount = $investments->count();
 
         if ($investorCount === 0) {
-            return back()->with(['Message', 'No investors found for this property.', 'alert-type' => 'error']);
+            return back()->with(['message' => 'No Investors found for this property', 'alert-type' => 'error']);
         }
 
         $monthlyProfit = (float) $property->profit_amount;
@@ -89,27 +91,26 @@ class ProfitController extends Controller
         $remaining = round(max(0, $plannedTotal - $alreadyPaid), 2);
 
         if ($remaining <= 0) {
-            return back()->with(['Message', 'No pending profit to discharge for this property.', 'alert-type' => 'info']);
+            return back()->with(['message' => 'All Scheduled profit alrady distributed', 'alert-type' => 'info']);
         }
 
         $discharge = min($monthlyProfit * $investorCount, $remaining);
 
         $dischargeCents = (int) round($discharge * 100);
         $perInvestorCents = intdiv($dischargeCents, $investorCount);
-        $remaindersCents = $dischargeCents % $investorCount;
+        $remainderCents = $dischargeCents % $investorCount;
 
-        DB::transaction(function () use ($invetments, $perInvestorCents, $remaindersCents, $property) {
-            foreach ($invetments->values() as $index => $investment) {
-                $amountCents = $perInvestorCents + ($index < $remaindersCents ? 1 : 0);
+        DB::transaction(function () use ($investments, $perInvestorCents, $remainderCents, $property) {
+            foreach ($investments->values() as $idx => $investment) {
+                $amountCents = $perInvestorCents + ($idx < $remainderCents ? 1 : 0);
                 $amount = $amountCents / 100;
 
                 Profit::create([
                     'investment_id' => $investment->id,
                     'user_id' => $investment->user_id,
-                    'property_id' => $investment->property_id,
+                    'property_id' => $property->id,
                     'profit_amount' => $amount,
                     'paid_date' => \Carbon\Carbon::now()->toDateString(),
-                    'trx' => strtoupper(Str::random(16)),
                     'status' => 'paid',
                 ]);
 
@@ -117,38 +118,105 @@ class ProfitController extends Controller
         });
 
         $notification = array(
-            'message' => 'Profit discharged successfully.',
+            'message' => 'One period profit discharge succesfully',
             'alert-type' => 'success'
         );
-        return redirect()->back()->with($notification);
+
+        return redirect()->route('pending.profit')->with($notification);
     }
+    //End Method 
 
-    public function AdminProfitReport()
+    public function ProfitReport()
     {
-        $profits = Profit::with(['property', 'investment', 'user'])
-            ->where('status', 'paid')
-            ->latest()
-            ->get()
-            ->groupBy('user_id');
-
+        $profits = Profit::with(['property', 'investment', 'user'])->where('status', 'paid')->latest()->get()->groupBy('user_id');
         return view('admin.backend.reports.profit_report', compact('profits'));
     }
+    //End Method 
+
 
     public function ProfitHistory()
     {
-        $profits = Profit::with(['property','investment'])
-                    ->where('user_id', auth()->id())
-                    ->where('status','paid')
-                    ->latest('paid_date')->orderBy('id','desc')->get();
-        
-        $investment = Investment::with('capitalReturn')
-                     ->where('user_id', auth()->id())
-                     ->whereHas('capitalReturn')
-                     ->latest()
-                     ->first();
 
-        return view('home.dashboard.profit_history',compact('profits','investment'));  
+        $profits = Profit::with(['property', 'investment'])
+            ->where('user_id', auth()->id())
+            ->where('status', 'paid')
+            ->latest('paid_date')->orderBy('id', 'desc')->get();
+
+        $investment = Investment::with('capitalReturn')
+            ->where('user_id', auth()->id())
+            ->whereHas('capitalReturn')
+            ->latest()
+            ->first();
+
+        return view('home.dashboard.profit_history', compact('profits', 'investment'));
     }
+    // End Method
+
+
+    public function WithdrawMoney()
+    {
+
+        $userId = auth()->id();
+        $profits = Profit::with(['property'])->where('user_id', $userId)->where('status', 'paid')->get()->groupBy('property_id');
+
+        $withdraws = Withdraw::where('user_id', $userId)->where('status', 'approved')->get()->groupBy('property_id');
+
+        $capitalReturns = CapitalReturn::with(['property'])->where('user_id', $userId)->where('status', 'paid')->get()->groupBy('property_id');
+
+        return view('home.dashboard.withdraw_money', compact('profits', 'withdraws', 'capitalReturns'));
+    }
+    // End Method
+
+    public function DepositWithdraw(Request $request)
+    {
+
+        $request->validate([
+            'property_id' => 'required|exists:properties,id',
+            'withdraw_amount' => 'required',
+            'payment_type' => 'required'
+        ]);
+
+        $userId = auth()->id();
+        $propertyId = $request->property_id;
+
+
+        $totalProfit = Profit::where('user_id', $userId)
+            ->where('property_id', $propertyId)
+            ->sum('profit_amount');
+
+        $totalWithdrawn = Withdraw::where('user_id', $userId)
+            ->where('property_id', $propertyId)
+            ->sum('receivable_amount');
+
+        $availableProfit = $totalProfit - $totalWithdrawn;
+
+        if ($request->receivable_amount > $availableProfit) {
+            return back()->with('error', 'Insufficient profit balance for withdrawal');
+        }
+
+        Withdraw::create([
+            'user_id' => $userId,
+            'property_id' => $propertyId,
+            'withdraw_amount' => $request->withdraw_amount,
+            'charge' => $request->charge,
+            'receivable_amount' => $request->receivable_amount,
+            'payment_type' => $request->payment_type,
+            'trx' => strtoupper(Str::random(12)),
+            'status' => 'pending',
+
+        ]);
+
+        $notification = array(
+            'message' => 'Withdrawal request submitted Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
+
+    }
+    // End Method
+
+
 
 
 }
