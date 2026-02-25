@@ -216,6 +216,34 @@ class ProfitController extends Controller
     }
     // End Method
 
+    public function CapitalReturnWithdraw(Request $request)
+    {
+        $request->validate([
+            'capital_return_id' => 'required|exists:capital_returns,id'
+        ]);
+
+        $userId = auth()->id();
+        $capitalReturns = CapitalReturn::where('id', $request->capital_return_id)
+            ->where('user_id', $userId)
+            ->where('status', 'paid')
+            ->first();
+
+        if (!$capitalReturns) {
+            return redirect()->back()->with('error', 'Invalid capital return or already requestd');
+        }
+        $capitalReturns->status = 'pending';
+        $capitalReturns->save();
+
+
+        $notification = array(
+            'message' => 'Capital request submitted Successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
+
+
+    }
+    // End Method
 
 
 

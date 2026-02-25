@@ -15,9 +15,10 @@ class IsUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user()->role !== 'user'){
-            abort(403, 'Unauthorized action.');
+        if ($request->user()?->role !== 'user' ) {
+            abort(403,'Access Denied');
         }
+
         return $next($request);
     }
 }

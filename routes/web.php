@@ -59,6 +59,7 @@ Route::controller(ProfitController::class)->group(function(){
     Route::get('/profit/history', 'ProfitHistory')->name('profit.history');
     Route::get('/withdraw/money', 'WithdrawMoney')->name('withdraw.money');
     Route::post('/deposit/withdraw', 'DepositWithdraw')->name('deposit.withdraw');
+    Route::post('/capital/return/withdraw', 'CapitalReturnWithdraw')->name('capital.return.withdraw');
 });
 
 
@@ -122,7 +123,7 @@ Route::controller(DepositController::class)->group(function(){
     Route::get('/deposit/details/{id}', 'DepositDetails')->name('deposit.details'); 
     Route::post('/admin/deposit/status/update/{id}', 'AdminDepositeStatusUpdate')->name('admin.deposit.status.update'); 
 
-    Route::get('/approved/deposit', 'ApprovedDeposits')->name('approved.deposit');
+    Route::get('/approved/deposit', 'AapprovedDeposit')->name('approved.deposit');
    
 });
 
