@@ -245,6 +245,84 @@ class ProfitController extends Controller
     }
     // End Method
 
+    public function ApprovedWithdraw()
+    {
+        $withdraws = Withdraw::with(['user','property'])
+                ->where('status','approved')
+                ->latest()
+                ->get();
+        return view('admin.backend.withdraw.approved_withdraw',compact('withdraws'));
+    }
 
+    public function PendingWithdraw()
+    {
+        $withdraws = Withdraw::with(['user', 'property'])->where('status', 'pending')
+                     ->latest()->get();
+
+        return view('admin.backend.withdraw.pending_withdraw',compact('withdraws'));
+    }
+
+    public function DetailWithdraw($id)
+    {
+        $details = Withdraw::with(['user','property'])->findOrFail($id);
+
+        return view('admin.backend.withdraw.withdraw_details',compact('details'));
+    }
+
+    public function WithdrawApprove(Request $request, $id)
+    {
+        $withdraws = Withdraw::findOrFail($id);
+        // $action = $request->input
+        $action = $request->input('action');
+
+        if($action === 'approved')
+        {
+            $withdraws->status = 'approved';
+        }
+        elseif($action === 'rejected')
+        {
+            $withdraws->status = 'rejected';
+        }
+
+        $withdraws->save();
+
+        $notification = array(
+            'message' => 'Withdraw request approved Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('approved.profit.withdraw')->with($notification);
+    }
+
+    public function ApprovedCapital()
+    {
+        $approvedCapital = CapitalReturn::with(['user','property'])->where('status','paid')->get();
+        return view('admin.backend.capital_return.approved_capital',compact('approvedCapital')); 
+    }
+
+    public function PendingCapitalWithdraw()
+    {
+        $pendingCapital = CapitalReturn::with(['user','property'])->where('status','pending')->get();
+        return view('admin.backend.capital_return.pending_capital',compact('pendingCapital')); 
+    }
+    
+
+    public function ApproveCapitalWithdraw(Request $request, $id)
+    {
+        $capital = CapitalReturn::findOrFail($id);
+        if ($request->action == 'approved') {
+            $capital->status = 'paid';
+        } elseif ($request->action == 'rejected') {
+            $capital->status = 'pending';
+        }
+
+        $capital->save();
+
+        $notification = array(
+            'message' => 'CapitalReturn request Approved Successfully',
+            'alert-type' => 'success'
+        ); 
+        return redirect()->route('approved.capital.withdraw')->with($notification); 
+    }
 
 }

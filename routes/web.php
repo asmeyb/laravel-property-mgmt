@@ -152,7 +152,15 @@ Route::controller(ProfitController::class)->group(function(){
     Route::get('/pending/profit', 'PendingProfit')->name('pending.profit');
     Route::post('/admin/profit/discharge', 'AdminProfitDischarge')->name('admin.profit.discharge');
     Route::get('/profit/report', 'ProfitReport')->name('profit.report');
-   
+
+    Route::get('/profit/approved/withdraw', 'ApprovedWithdraw')->name('approved.profit.withdraw');
+    Route::get('/profit/Pending/withdraw', 'PendingWithdraw')->name('pending.profit.withdraw');
+    Route::get('/profit/withdraw/Details/{id}', 'DetailWithdraw')->name('admin.withdraw.details');
+    Route::post('/profit/withdraw/Details/approved/{id}', 'WithdrawApprove')->name('admin.withdraw.approve');
+
+    Route::get('/profit/approved/Capital', 'ApprovedCapital')->name('approved.capital.withdraw');
+    Route::get('/profit/Pending/Capital', 'PendingCapitalWithdraw')->name('pending.capital.withdraw');    
+    Route::post('/profit/Capital/Details/approved/{id}', 'ApproveCapitalWithdraw')->name('admin.capital.approve');
 });
 
 
