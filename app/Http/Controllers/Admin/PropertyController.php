@@ -494,6 +494,46 @@ class PropertyController extends Controller
     }
     //End Method 
 
+    public function AllPropertyPage(Request $request)
+    {
+        $query = Property::query();
+        // Search by title
+        if($request->filled('search'))
+        {
+            $query->where('title', 'like', '%'. $request->search . '%');
+        }
+
+        // Filter by location
+        if($request->filled('location_id'))
+        {
+            $query->where('location_id', $request->location_id);
+        }
+
+        // Filter by Investment Type
+        if($request->filled('invest_type'))
+        {
+            $query->where('investment_type', $request->invest_type);
+        }
+
+        if($request->filled('is_capital_back'))
+        {
+            if($request->is_capital_back == '1')
+            {
+                $query->where('capital_back', 'Yes');
+            }
+            elseif($request->is_capital_back == '2')
+            {
+                $query->where('capital_back', 'No');
+            }
+        }
+
+        $allProperty = $query->latest()->get();
+
+        $locations = Location::latest()->get();
+
+        return view('home.all_property', compact('allProperty', 'locations'));
+    }
+
 
 
 

@@ -7,7 +7,7 @@
     <header class="header " id="header">
     <div class="container ">
         <nav class="navbar navbar-expand-lg">
-            <a class="navbar-brand logo order-1" href=" ">
+            <a class="navbar-brand logo order-1" href="{{ url('/') }}">
                 <img src="{{ asset('frontend/assets/images/logo.png') }}" alt="logo">
             </a>
             <button class="navbar-toggler header-button order-3 order-lg-2" type="button" data-bs-toggle="collapse"
@@ -26,13 +26,13 @@
                                                                                 </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href=" ">Home</a>
+                        <a class="nav-link active" href="{{ url('/') }}">Home</a>
                     </li>
                                         <li class="nav-item ">
                         <a href=" " class="nav-link">About</a>
                     </li>
                                         <li class="nav-item">
-                        <a class="nav-link " href=" ">Properties</a>
+                        <a class="nav-link " href="{{ route('all.property.page') }}">Properties</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " href=" ">Blog</a>
